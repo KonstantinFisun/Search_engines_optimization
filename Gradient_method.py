@@ -12,12 +12,12 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 # Создание класса рисования графики matplotlib
 class MyFigure(FigureCanvas):
     def __init__(self,width=5, height=4, dpi=100):
-        # Шаг 1. Создание фигуры.
+        #Step 1: Create a Create Figure
         self.fig = Figure(figsize=(width, height), dpi=dpi)
-        # Шаг 2. Активируйте окно рисунка в родительском классе
-        super(MyFigure,self).__init__(self.fig) # Это предложение является важным, иначе графика не будет отображаться
-        # 3-й шаг: создайте подзаголовок для рисования графики, 111 представляет номер подзаговора, например, подзаголовок Matlab (1,1,1)
-        self.axes = self.fig.add_subplot(111, projection='3d')
+        #Step 2: Activate the Figure window in the parent class
+        super(MyFigure,self).__init__(self.fig) #This sentence is essential, otherwise graphics cannot be displayed
+        #Step 3: Create a subplot for drawing graphics, 111 indicates the subplot number, such as matplot(1,1,1)
+        self.axes = self.fig.add_subplot(111)
 
 
 class Ui_Widget(object):
@@ -160,16 +160,14 @@ class Ui_Widget(object):
 
         self.retranslateUi(Widget)
         QtCore.QMetaObject.connectSlotsByName(Widget)
-
         # Пятый шаг: определение экземпляра класса MyFigure
-        self.F = MyFigure(width=3, height=2, dpi=100)
+        # self.F = MyFigure(width=3, height=2, dpi=100)
         # self.F.plotsin()
         # self.plotcos()
         # Шаг 6. Создайте макет в groupBox графического интерфейса пользователя, который используется для добавления экземпляра класса MyFigure (то есть фигуры) в другие части.
-        self.gridlayout = QtWidgets.QGridLayout(self.groupBox)  # Наследовать контейнер groupBox
+        #self.gridlayout = QtWidgets.QGridLayout(self.groupBox)  # Наследовать контейнер groupBox
 
         self.add_functions()
-
 
     def retranslateUi(self, Widget):
         _translate = QtCore.QCoreApplication.translate
@@ -185,6 +183,8 @@ class Ui_Widget(object):
         self.label_7.setText(_translate("Widget", "Шаг:"))
         self.pushButton_2.setText(_translate("Widget", "Очистить"))
         self.pushButton_3.setText(_translate("Widget", "По умолчанию"))
+
+
 
     def add_functions(self):
         self.pushButton_3.clicked.connect(self.default)
@@ -228,7 +228,7 @@ class Ui_Widget(object):
         k = 0
         arr = [[], [], []]
         self.tk = float(step)
-
+        print(3)
         res = self.gradient_method(self.start_point, self.eps_first, self.eps_second, self.M, k, self.tk, arr)
 
         print("Результат : " + str(res))
@@ -236,14 +236,26 @@ class Ui_Widget(object):
         x_p = np.linspace(-2, 2, 100)
         y_p = np.linspace(-2, 2, 100)
 
-        x_plot, y_plot = np.meshgrid(x_p, y_p)
-        fun_plot = self.func([x_plot, y_plot])
+        # x_plot, y_plot = np.meshgrid(x_p, y_p)
+        # fun_plot = self.func([x_plot, y_plot])
+        # self.gridlayout.addWidget(self.F)
+        # print(1)
+        # self.F.axes.scatter(arr[0], arr[1], arr[2], color='black', linewidths=2)
+        # self.F.axes.scatter(res[0], res[1], self.func([res[0], res[1]]), color='red', linewidths=4)
+        # self.F.axes.plot_surface(x_plot, y_plot, fun_plot, rstride=5, cstride=5, alpha=0.7)
 
-        self.F.axes.scatter(arr[0], arr[1], arr[2], color='black', linewidths=2)
-        self.F.axes.scatter(res[0], res[1], self.func([res[0], res[1]]), color='red', linewidths=4)
-        self.F.axes.plot_surface(x_plot, y_plot, fun_plot, rstride=5, cstride=5, alpha=0.7)
-
+        self.F = MyFigure(width=3, height=2, dpi=100)
+        self.plotcos()
+        self.gridlayout = QtWidgets.QGridLayout(self.groupBox)  # Inherit container groupBox
         self.gridlayout.addWidget(self.F, 0, 1)
+
+        # self.gridlayout.addWidget(self.F, 0, 1)
+
+    def plotcos(self):
+        t = np.arange(0.0, 5.0, 0.01)
+        s = np.cos(2 * np.pi * t)
+        self.F.axes.plot(t, s)
+        self.F.fig.suptitle("cos")
 
     # Функция f(x)
     def func(self,x):
